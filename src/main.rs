@@ -1,6 +1,8 @@
 use anyhow::{Context, Result};
 fn main() -> Result<()> {
-    let key = std::env::var("NUMBER_IN_ENV").context("Failed to get env var NUMBER_IN_ENV")?;
+    let var = "NUMBER_IN_ENV";
+
+    let key = std::env::var(var).context(format!("Failed to get env var {var}"))?;
     let number = key.parse::<i32>()?;
 
     println!("\"NUMBER_IN_ENV\" is {}", number);
