@@ -1,5 +1,8 @@
+use dotenvy::dotenv;
 use eyre::{eyre, Result, WrapErr};
 fn main() -> Result<()> {
+    dotenv().ok();
+
     let var = "NUMBER_IN_ENV";
 
     let key = std::env::var(var).wrap_err(eyre!("Failed to get env var {var}"))?;
