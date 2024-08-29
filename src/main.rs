@@ -2,6 +2,8 @@ use dotenvy::dotenv;
 use eyre::Result;
 fn main() -> Result<()> {
     dotenv().ok();
+    color_eyre::install()?;
+
     let var = "NUMBER_IN_ENV";
 
     let key = std::env::var(var)?;
