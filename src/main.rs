@@ -1,8 +1,7 @@
 use dotenvy::dotenv;
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+use eyre::Result;
+fn main() -> Result<()> {
     dotenv().ok();
-    color_eyre::install()?;
-
     let var = "NUMBER_IN_ENV";
 
     let key = std::env::var(var)?;
