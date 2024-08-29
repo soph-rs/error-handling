@@ -6,4 +6,9 @@ edition = "2021"
 [dependencies]
 color-eyre = { version = "0.6.3", default-features = true }
 dotenvy = "0.15.7"
-eyre = "0.6.12"
+tracing = { version = "0.1.40" }
+tracing-error = { version = "0.2.0" }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+[profile.dev.package.backtrace]
+opt-level = 3

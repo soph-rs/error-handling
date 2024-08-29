@@ -1,15 +1,41 @@
-use dotenvy::dotenv;
-use eyre::{eyre, Result, WrapErr};
-fn main() -> Result<()> {
-    dotenv().ok();
+use color_eyre::{eyre::Report, eyre::WrapErr, Section};
+use tracing::{info, instrument};
+
+#[instrument]
+fn main() -> Result<(), Report> {
+    install_tracing();
+
     color_eyre::install()?;
 
-    let var = "NUMBER_IN_ENV";
+    read_config()
+}
 
-    let key = std::env::var(var).wrap_err(eyre!("Failed to get env var {var}"))?;
-    let number = key.parse::<i32>()?;
+fn install_tracing() {
+    use tracing_error::ErrorLayer;
+    use tracing_subscriber::prelude::*;
+    use tracing_subscriber::{fmt, EnvFilter};
 
-    println!("\"NUMBER_IN_ENV\" is {}", number);
+    let fmt_layer = fmt::layer().with_target(false);
+    let filter_layer = EnvFilter::try_from_default_env()
+        .or_else(|_| EnvFilter::try_new("info"))
+        .unwrap();
 
-    Ok(())
+    tracing_subscriber::registry()
+        .with(filter_layer)
+        .with(fmt_layer)
+        .with(ErrorLayer::default())
+        .init();
+}
+
+#[instrument]
+fn read_file(path: &str) -> Result<(), Report> {
+    info!("Reading file");
+    Ok(std::fs::read_to_string(path).map(drop)?)
+}
+
+#[instrument]
+fn read_config() -> Result<(), Report> {
+    read_file("fake_file")
+        .wrap_err("Unable to read config")
+        .suggestion("try using a file that exists next time")
 }
